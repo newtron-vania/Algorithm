@@ -19,14 +19,16 @@ from collections import deque
 n = int(input())
 lopes = []
 for _ in range(n):
-  lopes.append(int(input()))
-q = deque(sorted(lopes, reverse=True))
+    lopes.append(int(input()))
+q = deque(sorted(lopes))
 result = 0
 l = len(q)
-for idx, val in enumerate(q):
-  v = val * (idx+1)
-  if v>result:
-    result = v
+while q:
+    v = q.popleft() * l
+    if result < v:
+        result = v
+    l -= 1
+
 print(result)
 
 #더 줄일 수 있는 방법이 있을까? 같은 값의 경우 반복을 띄어넘는다던가...
