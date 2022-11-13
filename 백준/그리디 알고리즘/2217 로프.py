@@ -32,3 +32,24 @@ while q:
 print(result)
 
 #더 줄일 수 있는 방법이 있을까? 같은 값의 경우 반복을 띄어넘는다던가...
+
+#dictionary를 이용해보니 메모리는 줄어들었으니 시간은 오히려 늘어났다.
+from collections import defaultdict
+n = int(input())
+current_count = n
+lope_count = {}
+ans = 0
+for _ in range(n):
+    k = int(input())
+    if k in lope_count:
+        lope_count[k] += 1
+    else:
+        lope_count[k] = 1
+lope_count = dict(sorted(lope_count.items()))
+for key, val in lope_count.items():
+    v = key*current_count
+    if ans < v:
+        ans = v
+    current_count -= val
+    
+print(ans)
