@@ -28,3 +28,100 @@
 
 출처 - https://www.acmicpc.net/problem/18500
 '''
+#미네랄이 파괴되었을 때 bfs를 이용해서 분리된 클러스터를 찾아내고, 최소 수직낙하거리를 찾아내서 그만큼 클러스터를 옮겨야 한다. 미네랄 1과는 달리 같은 행의 클러스터의 사이에 미네랄이 존재하는 경우도 확인하여 수직낙하거리를 찾아낸다.
+
+from collections import deque
+def check_mineral(x, y, graph):
+    #북, 남, 서, 동쪽 미네랄 확인
+    dir = [[-1,0], [1, 0], [0, -1], [0, 1], [1, 0]]
+    N, M = len(graph), len(graph[0])
+    visited = [[0]*M for _ in range(N+1)]
+    visited[x][y] = 1
+    for mx, my in dir:
+        hx, hy = x + mx, y + my
+        if hx <= 0 or hy < 0 or hx >= N or hy >= M:
+            continue
+        if graph[hx][hy] == "x" and visited[hx][hy] == 0:
+            visited[hx][hy] = 1
+            gravity_check = bfs(hx, hy, graph, visited)
+            if gravity_check:
+                return True
+    return False
+ 
+ 
+def bfs(x, y, graph, visited):
+    queue = deque()
+    queue.append([x,y])
+    N, M = len(graph), len(graph[0])
+    dir = [[-1,0], [0, -1], [0, 1], [1, 0]]
+    #바닥이랑 붙어있는지 확인
+    is_bottom = False
+    #idx = 순서, 내부 idx = 미네랄 높이
+    cluster = [[] for _ in range(M)]
+    cluster[y].append(x)
+    while queue:
+        x, y = queue.popleft()
+        for mx, my in dir:
+            hx, hy = x + mx, y + my
+            if hx < 0 or hy < 0 or hx >= N or hy >= M:
+                continue
+            if graph[hx][hy] == "x" and visited[hx][hy] == 0:
+                if hx == 0:
+                    is_bottom = True
+                cluster[hy].append(hx)
+                queue.append([hx, hy])
+                visited[hx][hy] = 1
+    #바닥과 연결되어 있다면 중지
+    if is_bottom:
+        return False
+    for idx, val in enumerate(cluster):
+        for i in val:
+            graph[i][idx] = "."
+    #최소 수직 길이 찾기
+    min_height = 1e9
+    for idx1, minerals in enumerate(cluster):
+        if len(minerals) == 0:
+    	      continue
+        minerals.sort()
+        for idx2, val in enumerate(minerals):
+            if idx2 == 0:
+                end = -1
+            else :
+                end = minerals[idx2-1]
+            for i in range(val-1, end, -1):
+                if graph[i][idx1] == "x":
+                    min_height = min(min_height, val - i-1)
+    #최소 수직길이만큼 클러스터 이동
+    for idx, val in enumerate(cluster):
+        for i in val:
+            graph[i-min_height][idx] = "x"
+    return True
+ 
+ 
+ 
+N, M = map(int,input().split())
+#시작 좌표를 1로 맞추고, 아래에 X가 존재할 경우 떨어지는 것을 멈추게 하기 위해 바닥에 미네랄이 있다고 가정한다.
+graph = [list(input().strip()) for _ in range(N)] + ["x"*M]
+graph.reverse()
+count = int(input())
+#막대를 던지는 방향
+dy = [1,0]
+heights = list(map(int, input().split()))
+
+for i in range(count):
+    h = heights[i]
+    if dy[i%2]:
+        for j in range(M):
+            if graph[h][j] == "x":
+                graph[h][j] = "."
+                check_mineral(h,j, graph)
+                break
+    else:
+        for j in range(M-1, -1, -1):
+            if graph[h][j] == "x":
+                graph[h][j] = "."
+                check_mineral(h,j, graph)
+                break
+ 
+for i in reversed(graph[1:]):
+	print(*i, sep="")
