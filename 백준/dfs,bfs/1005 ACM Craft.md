@@ -97,3 +97,58 @@ for _ in range(T):
     print(max(visited))
 ```
 
+- 위상정렬을 이용한 풀이다.
+- 각 노드의 비용, 방향 그래프, 진입차수를 저장하는 배열을 생성한다.
+- 진입차수가 0인 노드들부터 큐에 삽입하고 각 노드의 위치에 해당하는 dp에 cost를 저장한다.
+- 한 걸물을 건설하기 위해선 모든 테크가 다 완료되어야 한다. 즉, 바로 전 노드들 중 가장 큰 값과 현재 노드의 cost를 합한 값이 dp가 된다.
+- 다음 노드의 현재 dp와 현재 노드의 dp와 다음 노드의 cost를 비교하여 더 큰 값을 저장한다.
+- 한 노드의 계산이 완료되었으므로 진입 차수를 1 낮춘다. 만약 진입차수가 0이 된다면, 모든 간선의 작업이 수행되었다는 의미이므로 큐에 삽입한다.
+- 목표 노드가 큐에 삽입될 때까지 위 작업을 반복하고, 큐가 삽입된다면 결과를 출력한다.
+
+```python
+import math
+import sys
+from collections import deque
+input = sys.stdin.readline
+
+def topologySort(arrival):
+
+    queue = deque()
+    for i in range(1, n+1):
+        if inDegree[i] == 0:
+            queue.append(i)
+            dp[i] = costs[i-1]
+
+    while queue:
+        current_node = queue.popleft()
+        if current_node == arrival:
+            return
+        for next in graph[current_node]:
+            dp[next] = max(dp[next], dp[current_node] + costs[next-1])
+            inDegree[next] -= 1
+            if inDegree[next] == 0:
+                queue.append(next)
+    
+
+
+T = int(input())
+
+for _  in range(T):
+    n, m = map(int, input().split())
+    costs = list(map(int, input().split()))
+    graph = [[] for _ in range(n+1)]
+    inDegree = [0] *(n+1)
+    dp = [0]*(n+1)
+
+    for _ in range(m):
+        a, b = map(int, input().split())
+        graph[a].append(b)
+        inDegree[b] += 1
+
+    arrival = int(input())
+
+    topologySort(arrival)
+    print(dp[arrival])
+
+
+```
