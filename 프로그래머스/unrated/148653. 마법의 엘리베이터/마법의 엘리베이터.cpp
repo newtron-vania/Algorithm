@@ -7,7 +7,7 @@ using namespace std;
 
 const int MAX = INT_MAX;
 void dfs(int cnt, int tmp, int &answer){
-    if(tmp <= 2){
+    if(tmp <= 5){
         answer = min(cnt + tmp, answer);
         return;
     }
