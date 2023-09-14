@@ -23,8 +23,8 @@ bool check_open(vector<vector<int>>& key, vector<vector<int>>& lock, int n, int 
             bool OK = true;
             int result = 0;
 
-            for (int i = n-1; i >=0 ; i--) {
-                for (int j = n-1; j >=0 ; j--) {
+            for (int i = 0; i <n ; i++) {
+                for (int j = 0; j <n ; j++) {
                     int hx = x - (n - 1 - i);
                     int hy = y - (n - 1 - j);
                     if (hx < 0 || hy < 0 || hx >= m || hy >= m) continue;
