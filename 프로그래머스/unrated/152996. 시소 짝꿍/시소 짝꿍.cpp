@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-
+#include <map>
 using namespace std;
 
 const int MAX = 1001;
@@ -11,6 +11,7 @@ long long solution(vector<int> weights) {
     long long answer = 0;
     int cnt[MAX];
     fill_n(cnt, MAX, 0);
+    //map<int, int> cnt;
     for(int w : weights){
         cnt[w] += 1;
     }
