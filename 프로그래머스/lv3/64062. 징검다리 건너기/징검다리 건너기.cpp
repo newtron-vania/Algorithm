@@ -3,7 +3,7 @@
 #include <algorithm>
 
 using namespace std;
-bool binary_search(vector<int> stones, int k, int mid)
+bool binary_search(vector<int> &stones, int k, int mid)
 {
     int cnt =0;
     for(int i=0;i<stones.size();i++)
