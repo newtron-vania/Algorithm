@@ -12,7 +12,7 @@ vector<string> solution(int n, vector<int> arr1, vector<int> arr2) {
         for(int j = 0; j < size; j++){
             if(sum%2) str = "#" + str;
             else str = " " + str;
-            sum /= 2;
+            sum >>= 1;
         }
         answer.push_back(str);
     }
