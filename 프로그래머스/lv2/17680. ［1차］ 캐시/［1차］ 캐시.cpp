@@ -59,16 +59,6 @@ public:
 
         delete searchedNode;
     }
-
-    void ShowNodes() {
-        Node* tmp = head;
-        while (tmp != NULL) {
-            cout << tmp->city << " ";
-            tmp = tmp->nextNode;
-        }
-        cout << endl;
-    }
-
 };
 
 int solution(int cacheSize, vector<string> cities) {
