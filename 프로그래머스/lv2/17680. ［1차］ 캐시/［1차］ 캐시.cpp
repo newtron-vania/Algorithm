@@ -69,13 +69,6 @@ public:
         cout << endl;
     }
 
-    ~LinkedList() {
-        while (head != NULL) {
-            Node* tmp = head;
-            head = head->nextNode;
-            delete tmp;
-        }
-    }
 };
 
 int solution(int cacheSize, vector<string> cities) {
