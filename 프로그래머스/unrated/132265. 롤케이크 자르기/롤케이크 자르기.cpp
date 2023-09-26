@@ -18,7 +18,7 @@ int solution(vector<int> topping) {
         }
         arr[num]++;
     }
-    cout << topping_size << endl;
+    
     int left = 0;
     int right = topping_size;
     for(int num : topping){
@@ -26,16 +26,16 @@ int solution(vector<int> topping) {
             visited[num] = true;
             left++;
         }
-        
+
         arr[num]--;
         if(arr[num] == 0){
             right--;
         }
-        
+
         if(left == right){
             answer++;
         }
-        
+
         if(left > right)
             break;
     }
