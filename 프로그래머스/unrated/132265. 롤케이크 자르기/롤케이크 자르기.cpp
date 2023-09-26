@@ -18,7 +18,7 @@ int solution(vector<int> topping) {
         }
         arr[num]++;
     }
-    
+    cout << topping_size << endl;
     int left = 0;
     int right = topping_size;
     for(int num : topping){
