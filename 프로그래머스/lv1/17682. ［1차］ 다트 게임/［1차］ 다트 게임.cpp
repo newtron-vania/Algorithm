@@ -8,10 +8,9 @@ using namespace std;
 
 int solution(string dartResult) {
     int answer = 0;
-    int idx = 0;
     vector<int> results;
     string tmp = "";
-    while(idx < dartResult.length()){
+    for(int idx = 0; idx < dartResult.size(); idx++){
         if(isdigit(dartResult[idx])){
             tmp += dartResult[idx];
         }
@@ -39,7 +38,6 @@ int solution(string dartResult) {
             }
             
         }
-        idx++;
     }
     for(auto itr = results.begin(); itr != results.end(); ++itr){
         answer += *itr;
