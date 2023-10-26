@@ -29,7 +29,7 @@ bool IsBitTree(string number)
     else if(number.length() <= 3){
         return true;
     }
-    
+
     string left = number.substr(0,mid);
     string right = number.substr(mid+1);
     if(IsBitTree(left) && IsBitTree(right))
@@ -70,6 +70,6 @@ vector<int> solution(vector<long long> numbers)
         string num = MakeBit(number);
         answer.push_back((int)IsBitTree(num));
     }
-    
+
     return answer;
 }
