@@ -7,7 +7,15 @@
 
 using namespace std;
 
-
+void combination(string src, string crs ,int depth, map<string, int>& map_course )
+{
+    if(crs.length() == depth) { map_course[crs] += 1; return; }
+    
+    for(int i = 0; i < src.length(); i++)
+    {
+        combination(src.substr(i+1), crs + src[i], depth, map_course);
+    }
+}
 
 vector<string> solution(vector<string> orders, vector<int> course) {
     vector<string> answer;
@@ -16,21 +24,8 @@ vector<string> solution(vector<string> orders, vector<int> course) {
     for(string order : orders)
     {
         sort(order.begin(), order.end());
-        set<string> set_tmp;
-        do{
-            //확인할 코스의 길이별로 탐색
-            for(int len : course)
-            {
-                string str_tmp = order.substr(0, len);
-                sort(str_tmp.begin(), str_tmp.end());
-                set_tmp.insert(str_tmp);
-            }
-        }while(next_permutation(order.begin(), order.end()));
+        for(int len : course) { combination(order, "", len, map_course ); }
         
-        for(auto iter = set_tmp.begin(); iter != set_tmp.end(); iter++)
-        {
-            map_course[*iter] += 1;
-        }
     }
     
 
