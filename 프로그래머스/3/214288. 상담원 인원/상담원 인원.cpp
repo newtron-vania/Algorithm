@@ -9,6 +9,7 @@ using namespace std;
 유형 별 x명일 때의 최단시간 = 우선순위 큐를 통해 끝나는 시간을 우선순위로 정렬
 DP를 통해 상담원 인수별로 시간을 계산 -> 각 유형병로 인원수가 1명씩 늘어날 때마다 줄어드는 대기시간이 가장 큰 쪽에 인원수를 추가한다.
 **/
+
 int CaculateTime(int type, int count, vector<vector<int>>& reqs);
 
 int solution(int k, int n, vector<vector<int>> reqs) {
