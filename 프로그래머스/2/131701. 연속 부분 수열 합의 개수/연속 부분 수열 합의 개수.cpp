@@ -1,11 +1,11 @@
 #include <string>
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <iostream>
 
 using namespace std;
 
-set<int> nums;
+unordered_set<int> nums;
 
 int solution(vector<int> elements) {
     int answer = 0;
