@@ -14,7 +14,6 @@ int gcd(int a, int b)
         a = b;
         b = tmp;
     }
-    cout << a << endl;
     return a;
 }
 
