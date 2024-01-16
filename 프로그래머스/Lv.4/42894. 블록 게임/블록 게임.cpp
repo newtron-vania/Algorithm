@@ -1,198 +1,284 @@
 #include <string>
 #include <vector>
-#include <iostream>
+
 using namespace std;
- 
-int row, col;
-int blockCnt;
-int black = -1;
-int boomCnt;
-vector<vector<int>> copy_board(55, vector<int>(55));
- 
-void copy(vector<vector<int>> &to, vector<vector<int>> &from)
+
+struct Point
 {
-    for(int i = 0; i < row; i++)
+    unsigned char nRow;
+    unsigned char nCol;
+};
+
+union Block
+{
+    long int nDword;
+
+    struct
     {
-        for(int j = 0; j < col; j++)
-        {
-            to[i][j] = from[i][j];
-        }
+        unsigned char type;
+        unsigned char number;
+        Point stBaseLoc;
+    };
+};
+
+bool bCheckArray[201];
+Block stBlockArray[200];
+int nBlockCnt;
+int N;
+
+Point GetLeftTopPoint(Block stBlock)
+{
+    Point p;
+    if (stBlock.type == 4)
+    {
+        p.nRow = stBlock.stBaseLoc.nRow - 2;
+        p.nCol = stBlock.stBaseLoc.nCol;
     }
-}
- 
-int isSquare(int x, int y, int shape, int color, vector<vector<int>> &board) // shape(0): 2*3 , shape(1): 3*2
-{
-    int colorCnt = 0;
-    int blackCnt = 0;
-    
-    if(shape == 0)
+    else if (stBlock.type == 7)
     {
-        for(int i = x; i <= x+1; i++)
-        {
-            for(int j = y; j <= y+2; j++)
-            {
-                if(board[i][j] == color)
-                {
-                    colorCnt++;
-                }
-                else if(board[i][j] == black)
-                {
-                    blackCnt++;
-                }
-            }
-        }
+        p.nRow = stBlock.stBaseLoc.nRow - 1;
+        p.nCol = stBlock.stBaseLoc.nCol;
+    }
+    else if (stBlock.type == 9)
+    {
+        p.nRow = stBlock.stBaseLoc.nRow - 1;
+        p.nCol = stBlock.stBaseLoc.nCol;
     }
     else
     {
-        for(int i = x; i <= x+2; i++)
+        p.nRow = stBlock.stBaseLoc.nRow;
+        p.nCol = stBlock.stBaseLoc.nCol;
+    }
+
+    return p;
+}
+
+Point GetEmptyPoint(Block stBlock, int nEmptyPointIndex)
+{
+    if (stBlock.type == 3)
+    {
+        if (nEmptyPointIndex == 0)
         {
-            for(int j = y; j <= y+1; j++)
-            {
-                if(board[i][j] == color)
-                {
-                    colorCnt++;
-                }
-                else if(board[i][j] == black)
-                {
-                    blackCnt++;
-                }
-            }
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol + 1;
+            return p;
+        }
+        else
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol + 2;
+            return p;
         }
     }
-    
-    if(colorCnt == 4 && blackCnt == 2)
+
+    else if (stBlock.type == 7)
     {
-        return 1;
+        if (nEmptyPointIndex == 0)
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol;
+            return p;
+        }
+        else
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol + 1;
+            return p;
+        }
     }
+
+    else if (stBlock.type == 9)
+    {
+        if (nEmptyPointIndex == 0)
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol;
+            return p;
+        }
+        else
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol + 2;
+            return p;
+        }
+    }
+
+    else if (stBlock.type == 4)
+    {
+        if (nEmptyPointIndex == 0)
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol;
+            return p;
+        }
+        else
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow + 1;
+            p.nCol = stBlock.stBaseLoc.nCol;
+            return p;
+        }
+    }
+
     else
     {
-        return 0;
+        if (nEmptyPointIndex == 0)
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow;
+            p.nCol = stBlock.stBaseLoc.nCol + 1;
+            return p;
+        }
+        else
+        {
+            Point p;
+            p.nRow = stBlock.stBaseLoc.nRow + 1;
+            p.nCol = stBlock.stBaseLoc.nCol + 1;
+            return p;
+        }
     }
 }
- 
-void print(vector<vector<int>> &board)
+
+void FindBlock(vector<vector<int>>& board, int num, int row, int col)
 {
-    for(int i = 0; i < col; i++)
+    if (bCheckArray[num] == true)
+        return;
+
+    bCheckArray[num] = true;
+
+    // type 3
+    if ((col + 2 < N) && (row + 1 < N)
+        && board[row + 1][col] == num && board[row + 1][col + 1] == num && board[row + 1][col + 2] == num)
     {
-        for(int j = 0; j < row; j++)
-        {
-            cout << board[i][j] << " ";
-        }
-        cout << endl;
+        stBlockArray[nBlockCnt].type = 3;
+        stBlockArray[nBlockCnt].number = num;
+        stBlockArray[nBlockCnt].stBaseLoc.nRow = row;
+        stBlockArray[nBlockCnt].stBaseLoc.nCol = col;
+
+        nBlockCnt++;
+        return;
     }
-    cout << endl;
+
+    // type 7
+    if ((col + 2 < N) && (row - 1 >= 0)
+        && board[row][col + 1] == num && board[row][col + 2] == num && board[row - 1][col + 2] == num)
+    {
+        stBlockArray[nBlockCnt].type = 7;
+        stBlockArray[nBlockCnt].number = num;
+        stBlockArray[nBlockCnt].stBaseLoc.nRow = row - 1;
+        stBlockArray[nBlockCnt].stBaseLoc.nCol = col;
+
+        nBlockCnt++;
+        return;
+    }
+
+    // type 9
+    if ((col + 2 < N) && (row - 1 >= 0)
+        && board[row][col + 1] == num && board[row][col + 2] == num && board[row - 1][col + 1] == num)
+    {
+        stBlockArray[nBlockCnt].type = 9;
+        stBlockArray[nBlockCnt].number = num;
+        stBlockArray[nBlockCnt].stBaseLoc.nRow = row - 1;
+        stBlockArray[nBlockCnt].stBaseLoc.nCol = col;
+
+        nBlockCnt++;
+        return;
+    }
+
+    // type 4
+    if ((col + 1 < N) && (row - 2 >= 0)
+        && board[row][col + 1] == num && board[row - 1][col + 1] == num && board[row - 2][col + 1] == num)
+    {
+        stBlockArray[nBlockCnt].type = 4;
+        stBlockArray[nBlockCnt].number = num;
+        stBlockArray[nBlockCnt].stBaseLoc.nRow = row - 2;
+        stBlockArray[nBlockCnt].stBaseLoc.nCol = col;
+
+        nBlockCnt++;
+        return;
+    }
+
+    // type 6
+    if ((col + 1 < N) && (row + 2 < N)
+        && board[row + 1 ][col] == num && board[row + 2][col] == num && board[row + 2][col + 1] == num)
+    {
+        stBlockArray[nBlockCnt].type = 6;
+        stBlockArray[nBlockCnt].number = num;
+        stBlockArray[nBlockCnt].stBaseLoc.nRow = row;
+        stBlockArray[nBlockCnt].stBaseLoc.nCol = col;
+
+        nBlockCnt++;
+        return;
+    }
 }
- 
-void bomb(int x, int y, int shape, vector<vector<int>> &board)
+
+bool IsRemovable(vector<vector<int>>& board, Point stPoint)
 {
-    if(shape == 0)
+    for (int row = stPoint.nRow; row >= 0; row--)
     {
-        for(int i = x; i <= x+1; i++)
-        {
-            for(int j = y; j <= y+2; j++)
-            {
-                board[i][j] = 0;
-                copy_board[i][j] = 0;
-            }
-        }
+        if (board[row][stPoint.nCol] != 0)
+            return false;
     }
-    else
-    {
-        for(int i = x; i <= x+2; i++)
-        {
-            for(int j = y; j <= y+1; j++)
-            {
-                board[i][j] = 0;
-                copy_board[i][j] = 0;
-            }
-        }
-    }   
+
+    return true;
 }
- 
-bool fall(vector<vector<int>> &board)
+
+void CleanUpBoard(vector<vector<int>>& board, Block stBlock)
 {
-    bool boomCheck = false;
-    copy(copy_board, board);
-    
-    // 검은 블록 떨어뜨리기
-    for(int i = 0; i < col; i++)
-    {    
-        for(int j = 0; j < row; j++)
-        {   
-            if(board[j][i] != 0)
-            {
-                break;
-            }
-            
-            board[j][i] = black;
-         }
-    }
-    
-    // print(board);
-    
-    for(int i = 1; i <= blockCnt; i++)
+    int endCol = (stBlock.stBaseLoc.nCol + 3) > N ? N : (stBlock.stBaseLoc.nCol + 3);
+    int endRow = (stBlock.stBaseLoc.nRow + 3) > N ? N : (stBlock.stBaseLoc.nRow + 3);
+
+    for (int col = stBlock.stBaseLoc.nCol; col < endCol; col++)
     {
-        // 2*3 모양
-        for(int j = 0; j <= row-2; j++)
-        {
-            for(int k = 0; k <= col-3; k++)
-            {
-                if(isSquare(j, k, 0, i, board))
-                {
-                    boomCheck = true;
-                    bomb(j, k, 0, board);
-                    boomCnt++;
-                }
-            }
-        }
-        
-        // 3*2 모양
-        for(int j = 0; j <= row-3; j++)
-        {
-            for(int k = 0; k <= col-2; k++)
-            {
-                if(isSquare(j, k, 1, i, board))
-                {
-                    boomCheck = true;
-                    bomb(j, k, 1, board);
-                    boomCnt++;
-                }
-            }
-        }
+        for (int row = stBlock.stBaseLoc.nRow; row < endRow; row++)
+            if (board[row][col] == stBlock.number)
+                board[row][col] = 0;
     }
-    
-    copy(board, copy_board);
-    
-    // print(board);
-    
-    return boomCheck;
 }
- 
-int solution(vector<vector<int>> board) 
+
+bool RemoveBlock(vector<vector<int>>& board)
 {
-    row = board.size();
-    col = row;
-      
-    for(int i = 0; i < row; i++)
+    for (int nBlockIndex = 0; nBlockIndex < nBlockCnt; nBlockIndex++)
     {
-        for(int j = 0; j < col; j++)
+        Block stBlock = stBlockArray[nBlockIndex];
+        Point stPoint0 = GetEmptyPoint(stBlock, 0);
+        Point stPoint1 = GetEmptyPoint(stBlock, 1);
+        if (IsRemovable(board, stPoint0) == true && IsRemovable(board, stPoint1) == true)
         {
-            if(board[i][j] > blockCnt)
-            {
-                blockCnt = board[i][j];
-            }
+            CleanUpBoard(board, stBlock);
+            stBlockArray[nBlockIndex].nDword = stBlockArray[nBlockCnt - 1].nDword;
+            nBlockCnt--;
+            return true;
         }
     }
-    
-    while(1)
+
+    return false;
+}
+
+int solution(vector<vector<int>> board)
+{
+    int answer = 0;
+
+    N = board.size();
+
+    for (int col = 0; col < N; col++)
     {
-        bool check = fall(board);
-        
-        if(check == false)
-        {
-            break;
-        }
-    }       
-    
-    return boomCnt;
+        for (int row = 0; row < N; row++)
+            if (board[row][col] != 0)
+                FindBlock(board, board[row][col], row, col);
+    }
+
+    while (RemoveBlock(board) == true)
+    {
+        answer++;
+    }
+
+    return answer;
 }
