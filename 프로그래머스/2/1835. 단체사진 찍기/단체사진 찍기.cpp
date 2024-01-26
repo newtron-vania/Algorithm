@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 using namespace std;
 
 bool checkCondition(char opr, int num, int diff) {
