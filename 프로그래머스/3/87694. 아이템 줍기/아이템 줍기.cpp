@@ -38,7 +38,6 @@ int solution(vector<vector<int>> rectangle, int characterX, int characterY, int 
                 board[y][x] = 0;
     }
 
-    // 4. BFS
     queue<pair<int, int>> q;
     q.emplace(characterY, characterX);
     while (!q.empty())
