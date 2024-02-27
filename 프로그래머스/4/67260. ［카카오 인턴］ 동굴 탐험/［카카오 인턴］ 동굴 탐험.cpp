@@ -27,7 +27,7 @@ void BFS(int node){
         { 
             s.erase(key[tmp]); 
             q.push(key[tmp]); 
-            check_visit[key[tmp]] = 1;
+            check_visit[key[tmp]] = true;
         }
         for(int it : edge[tmp])
         {
