@@ -52,7 +52,7 @@ vector<int> solution(vector<string> genres, vector<int> plays) {
 
     for (auto& itr : vec) 
     {
-        int size = sortDB[itr.first].size() >= 2 ? 2 : sortDB[itr.first].size();
+        int size = sortDB[itr.first].size() >= 2 ? 2 : 1;
         for (int i = 0; i < size; i++)
         {
             answer.push_back(sortDB[itr.first][i][1]);
