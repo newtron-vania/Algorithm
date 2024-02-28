@@ -23,7 +23,6 @@ int solution(vector<int> a)
         }
         else
         {
-            
             //지금 풍선이 왼쪽 값들 중 최솟값보다 작음
             if(check > a[i])
             {
