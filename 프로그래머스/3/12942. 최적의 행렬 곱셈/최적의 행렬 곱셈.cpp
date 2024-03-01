@@ -13,7 +13,7 @@ int solution(vector<vector<int>> matrix_sizes) {
     int answer = 0;
     int matrix_size = matrix_sizes.size();
     
-    fill(dp[0], dp[200], INF);
+    fill_n(dp[0], 40401, INF);
     
     for(int i = 0 ; i < matrix_size; i++)
     {
