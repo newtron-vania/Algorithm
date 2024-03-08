@@ -17,11 +17,13 @@ int solution(vector<string> want, vector<int> number, vector<string> discount) {
     
     for(int i = 0; i < discount.size(); i++)
     {
+        
         bool isOver = true;
         if(want_counts.find(discount[i]) != want_counts.end())
         {
             want_counts[discount[i]] += 1;
         }
+        
         if(i >= 10)
         {
             if(want_counts.find(discount[i-10]) != want_counts.end())
@@ -38,10 +40,12 @@ int solution(vector<string> want, vector<int> number, vector<string> discount) {
                 break;
             }
         }
+    
         if(isOver)
         {
             answer += 1;
         }
     }
+    
     return answer;
 }
