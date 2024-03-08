@@ -31,9 +31,7 @@ int solution(int k, int n, vector<vector<int>> reqs) {
         for(int j = 1; j <= max_num; j++)
         {
             dp[(max_num*i) + (j-1)] = CaculateTime(i, j, req_sep[i]);
-            //cout << dp[(max_num*i) + (j-1)] << " ";
         }
-        //cout << endl;
     }
     
     
@@ -77,6 +75,7 @@ int CaculateTime(int type, int count, vector<vector<int>>& reqs)
 {
     priority_queue<int, vector<int>, greater<>> pq;
     int result_time = 0;
+    
     for(const vector<int>& req : reqs)
     {
         if(pq.size() < count)
@@ -87,8 +86,8 @@ int CaculateTime(int type, int count, vector<vector<int>>& reqs)
         {
             int end_time = pq.top();
             pq.pop();
+            
             int time = max(0, end_time - req[1]);
-            //if(req[1] > p_req[0]) next_end = req[1] + req[0] ? p_req[0] + req[0]
             result_time += time;
             
             pq.push(max(req[1], end_time) + req[0]);
