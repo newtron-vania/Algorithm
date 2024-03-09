@@ -1,8 +1,10 @@
 #include <string>
 #include <vector>
+#include <limits>
 
-const int MODULER = 1000000007;
 using namespace std;
+
+const int MODULER = 1'000'000'007;
 
 int solution(int n) 
 {
