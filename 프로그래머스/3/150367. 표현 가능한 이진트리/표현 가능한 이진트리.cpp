@@ -4,14 +4,14 @@
 
 using namespace std;
 
-//111 - 7
-//0101010 - 42
-//101 - 5
-//0111111 - 63
-//1101111 - 111
-//1011111 - 95
+// 111 - 7
+// 0101010 - 42
+// 101 - 5
+// 0111111 - 63
+// 1101111 - 111
+// 1011111 - 95
 
-//이진트리 체크 함수
+// 이진트리 체크 함수
 bool IsBitTree(string number)
 {
     int mid = (number.length() / 2);
@@ -41,7 +41,7 @@ bool IsBitTree(string number)
     }
 }
 
-//이진수로 변환
+// 이진수로 변환
 string MakeBit(long long number)
 {
     string result = "";
