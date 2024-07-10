@@ -44,6 +44,7 @@ int main()
         }
     }
 
+
     int current_active = 0;
     for (int t = 0; t < T; ++t) 
     {
