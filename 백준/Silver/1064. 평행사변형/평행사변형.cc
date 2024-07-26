@@ -1,20 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-double solve(double xa, double ya, double xb, double yb, double xc, double yc) 
+double a1, b1, a2, b2, a3, b3;
+
+double Dist(double A1, double B1, double A2, double B2) 
 {
-    if ((xa - xb) * (ya - yc) == (ya - yb) * (xa - xc)) {
-        return -1.0;
-    }
-
-    double ab = sqrt((xa - xb) * (xa - xb) + (ya - yb) * (ya - yb));
-    double ac = sqrt((xa - xc) * (xa - xc) + (ya - yc) * (ya - yc));
-    double bc = sqrt((xb - xc) * (xb - xc) + (yb - yc) * (yb - yc));
-
-    vector<double> l = {ab + ac, ab + bc, ac + bc};
-
-    double result = *max_element(l.begin(), l.end()) - *min_element(l.begin(), l.end());
-    return 2 * result;
+    return sqrt((A1 - A2) * (A1 - A2) + (B1 - B2) * (B1 - B2));
 }
 
 int main() 
@@ -23,11 +14,32 @@ int main()
     cout.tie(NULL);
     cin.tie(NULL);
 
-    double xa, ya, xb, yb, xc, yc;
-    cin >> xa >> ya >> xb >> yb >> xc >> yc;
+    cin >> a1 >> b1 >> a2 >> b2 >> a3 >> b3;
 
-    double answer = solve(xa, ya, xb, yb, xc, yc);
-    cout << fixed << setprecision(16) << answer << '\n';
+    double M1 = 1987654321;
+    double M2 = 1987654321;
+
+    M1 = (b2 - b1) * (a3 - a2);
+    M2 = (b3 - b2) * (a2 - a1);
+
+    if (M1 == M2) 
+    {
+        cout << -1 << '\n';
+        return 0;
+    }
+
+    double A = Dist(a1, b1, a2, b2);
+    double B = Dist(a1, b1, a3, b3);
+    double C = Dist(a2, b2, a3, b3);
+
+    double len1 = 2 * (A + B);
+    double len2 = 2 * (B + C);
+    double len3 = 2 * (C + A);
+
+    cout << fixed;
+    cout.precision(16);
+
+    cout << max(len1, max(len2, len3)) - min(len1, min(len2, len3)) << '\n';
 
     return 0;
 }
