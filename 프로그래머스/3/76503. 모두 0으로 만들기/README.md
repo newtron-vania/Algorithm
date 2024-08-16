@@ -1,10 +1,10 @@
 # [level 3] 모두 0으로 만들기 - 76503 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/76503#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/76503) 
 
 ### 성능 요약
 
-메모리: 91.6 MB, 시간: 45.47 ms
+메모리: 100 MB, 시간: 224.28 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 07월 08일 21:33:10
+2024년 08월 16일 18:14:42
 
 ### 문제 설명
 
