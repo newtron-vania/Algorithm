@@ -14,48 +14,59 @@ int solution(string s) {
     int cnt = 0;
     bool isTrue = false;
     string checkstr = "]})";
-    for (int i = 0; i < s.size(); i++) {
-        if (checkstr.find(s[i]) != string::npos) {
+    for (int i = 0; i < s.size(); i++)
+    {
+        if (checkstr.find(s[i]) != string::npos)
+        {
             rotateIdx.push_back(i+1);
         }
     }
 
-    for (int i = rotateIdx.size()-1; i >0; i--) {
+    for (int i = rotateIdx.size()-1; i >0; i--) 
+    {
         rotateIdx[i] -= rotateIdx[i-1];
     }
 
 
     int num = 0;
-    while (cnt < s.size()) {
+    while (cnt < s.size()) 
+    {
         isTrue = true;
         stack.clear();
-        for (char c : s) {
-            if (checkstr.find(c) == string::npos) {
+        for (char c : s) 
+        {
+            if (checkstr.find(c) == string::npos)
+            {
                 stack.push_back(c);
             }
-            else {
-                if (stack.empty()) {
+            else 
+            {
+                if (stack.empty())
+                {
                     isTrue = false;
                     break;
                 }
                 if (stack.back() == '[')
                     if (c == ']')
                         stack.pop_back();
-                    else {
+                    else 
+                    {
                         isTrue = false;
                         break;
                     }
                 else if (stack.back() == '{')
                     if (c == '}')
                         stack.pop_back();
-                    else {
+                    else
+                    {
                         isTrue = false;
                         break;
                     }
                 else if (stack.back() == '(')
                     if (c == ')')
                         stack.pop_back();
-                    else {
+                    else
+                    {
                         isTrue = false;
                         break;
                     }
