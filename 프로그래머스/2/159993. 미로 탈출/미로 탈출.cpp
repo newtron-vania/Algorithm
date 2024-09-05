@@ -5,21 +5,25 @@
 
 using namespace std;
 
-struct Node {
+struct Node 
+{
     int row, col, cost, heuristic;
 
     Node(int r, int c, int cst, int h) : row(r), col(c), cost(cst), heuristic(h) {}
 
-    bool operator>(const Node& other) const {
+    bool operator>(const Node& other) const 
+    {
         return cost + heuristic > other.cost + other.heuristic;
     }
 };
 
-int calculateHeuristic(int currentRow, int currentCol, int targetRow, int targetCol) {
+int calculateHeuristic(int currentRow, int currentCol, int targetRow, int targetCol) 
+{
     return abs(targetRow - currentRow) + abs(targetCol - currentCol);
 }
 
-int AStar(const vector<string>& maps, int startRow, int startCol, int targetRow, int targetCol) {
+int AStar(const vector<string>& maps, int startRow, int startCol, int targetRow, int targetCol) 
+{
     int rows = maps.size();
     int cols = maps[0].size();
 
@@ -35,14 +39,16 @@ int AStar(const vector<string>& maps, int startRow, int startCol, int targetRow,
     // 시작 노드를 우선순위 큐에 넣기
     pq.push(Node(startRow, startCol, 0, calculateHeuristic(startRow, startCol, targetRow, targetCol)));
 
-    while (!pq.empty()) {
+    while (!pq.empty()) 
+    {
         Node current = pq.top();
         pq.pop();
 
         int r = current.row;
         int c = current.col;
 
-        if (r == targetRow && c == targetCol) {
+        if (r == targetRow && c == targetCol)
+        {
             // 출구에 도달
             return current.cost;
         }
@@ -51,11 +57,13 @@ int AStar(const vector<string>& maps, int startRow, int startCol, int targetRow,
             visited[r][c] = true;
 
             //주변 노드 확인
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < 4; ++i)
+            {
                 int nr = r + dr[i];
                 int nc = c + dc[i];
 
-                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && maps[nr][nc] != 'X' && !visited[nr][nc]) {
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && maps[nr][nc] != 'X' && !visited[nr][nc]) 
+                {
                     int newCost = current.cost + 1;
                     int heuristic = calculateHeuristic(nr, nc, targetRow, targetCol);
                     pq.push(Node(nr, nc, newCost, heuristic));
@@ -78,15 +86,20 @@ int solution(vector<string> maps)
     int startRow, startCol, endRow, endCol, leverRow, leverCol;
 
     // 시작 지점, 출구 및 레버의 위치를 찾기
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            if (maps[i][j] == 'S') {
+    for (int i = 0; i < rows; ++i) 
+    {
+        for (int j = 0; j < cols; ++j)
+        {
+            if (maps[i][j] == 'S')
+            {
                 startRow = i;
                 startCol = j;
-            } else if (maps[i][j] == 'E') {
+            } else if (maps[i][j] == 'E') 
+            {
                 endRow = i;
                 endCol = j;
-            } else if (maps[i][j] == 'L') {
+            } else if (maps[i][j] == 'L') 
+            {
                 leverRow = i;
                 leverCol = j;
             }
@@ -94,12 +107,16 @@ int solution(vector<string> maps)
     }
     int cost = 0;
     cost = AStar(maps, startRow, startCol, leverRow, leverCol);
+    
     if(cost < 0)
         return -1;
+    
     answer += cost;
     cost = AStar(maps, leverRow, leverCol, endRow, endCol);
+    
     if(cost < 0)
         return -1;
+    
     answer += cost;
     return answer;
 }
