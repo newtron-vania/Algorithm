@@ -5,7 +5,8 @@
  
 using namespace std;
  
-vector<int> solution(int m, int n, int startX, int startY, vector<vector<int>> balls) {
+vector<int> solution(int m, int n, int startX, int startY, vector<vector<int>> balls)
+{
     vector<int> answer;
     
     for(int i = 0; i < balls.size(); i++)
