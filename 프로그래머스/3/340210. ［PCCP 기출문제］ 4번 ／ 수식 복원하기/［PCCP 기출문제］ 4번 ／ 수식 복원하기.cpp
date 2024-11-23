@@ -10,7 +10,8 @@ vector<string> Split(string str, char Delimiter)
     vector<string> result;
  
     // istringstream은 istream을 상속받으므로 getline을 사용할 수 있다.
-    while (getline(iss, buffer, Delimiter)) {
+    while (getline(iss, buffer, Delimiter)) 
+    {
         result.push_back(buffer);               // 절삭된 문자열을 vector에 저장
     }
  
