@@ -1,157 +1,171 @@
-#include <bits/stdc++.h>
+#include <string>
+#include <vector>
+#include <sstream>
 
 using namespace std;
 
-vector<string> Split(string str, char Delimiter)
+vector<string> Split(string str)
 {
-    istringstream iss(str);             // istringstream에 str을 담는다.
-    string buffer;                      // 구분자를 기준으로 절삭된 문자열이 담겨지는 버퍼
- 
+    stringstream sst(str);
+    string buf;
     vector<string> result;
- 
-    // istringstream은 istream을 상속받으므로 getline을 사용할 수 있다.
-    while (getline(iss, buffer, Delimiter)) 
+    while (getline(sst, buf, ' '))
     {
-        result.push_back(buffer);               // 절삭된 문자열을 vector에 저장
+        result.push_back(buf);
     }
- 
     return result;
 }
 
-// 주어진 숫자를 n진법으로 변환하여 10진수로 계산
-int convertToDecimal(const string &number, int base)
+int convertBaseToDecimal(int num, int base)
 {
     int result = 0;
-    for (char ch : number)
+    int multiplier = 1;
+    while (num > 0)
     {
-        result = result * base + (ch - '0');
+        if (num % 10 >= base)
+        {
+            return -1;
+        }
+        result += (num % 10) * multiplier;
+        multiplier *= base;
+        num /= 10;
     }
     return result;
 }
 
-// 연산 수식을 10진법으로 검증
-bool isValidExpression(const string &A, const string &B, const string &C, string op, int base)
+int convertDecimalToBase(int num, int base)
 {
-    int a = convertToDecimal(A, base);
-    int b = convertToDecimal(B, base);
-    int c = convertToDecimal(C, base);
-
-    if (op == "+")
+    int result = 0;
+    int multiplier = 1;
+    while (num > 0)
     {
-        return a + b == c;
+        result += (num % base) * multiplier;
+        multiplier *= 10;
+        num /= base;
     }
-    else
-    {
-        return a - b == c;
-    }
+    return result;
 }
 
-// 주어진 진법 후보군으로 모르는 수식을 해결
-string solveUnknownExpression(const string &expression, const vector<int> &bases)
+vector<int> getInvalidBases(vector<string> expression)
 {
-    vector<string> words = Split(expression, ' ');
-            
-    string A = words[0];
-    string op = words[1];
-    string B = words[2];
-    string C = words[4];
-
-    unordered_set<string> possibleResults;
-    for (int base : bases)
+    int A, B, C;
+    vector<int> invalidBases;
+    for (int i = 2; i < 10; i++)
     {
-        int a = convertToDecimal(A, base);
-        int b = convertToDecimal(B, base);
-        int result = (op == "+") ? a + b : a - b;
-        string cBase = "";
-
-        // 결과값을 현재 진법으로 변환
-        do 
+        A = convertBaseToDecimal(stoi(expression[0]), i);
+        B = convertBaseToDecimal(stoi(expression[2]), i);
+        if (expression[4] == "X")
         {
-            cBase = char((result % base) + '0') + cBase;
-            result /= base;
-        }while(result > 0);
-
-        // 변환한 결과값을 저장
-        if (cBase == C || C == "X")
+            if (A < 0 || B < 0)
+            {
+                invalidBases.push_back(i);
+            }
+        }
+        else
         {
-            possibleResults.insert(cBase);
+            C = convertBaseToDecimal(stoi(expression[4]), i);
+            if (A < 0 || B < 0 || C < 0)
+            {
+                invalidBases.push_back(i);
+                continue;
+            }
+            if (expression[1] == "-")
+            {
+                if (A - B != C)
+                {
+                    invalidBases.push_back(i);
+                }
+            }
+            else
+            {
+                if (A + B != C)
+                {
+                    invalidBases.push_back(i);
+                }
+            }
         }
     }
-
-    // 결과가 여러 가지이면 ?
-    if (possibleResults.size() != 1)
-    {
-        return expression.substr(0, expression.length() - 1) + "?";
-    }
-    else
-    {
-        return expression.substr(0, expression.length() - 1) + *possibleResults.begin();
-    }
+    return invalidBases;
 }
 
 vector<string> solution(vector<string> expressions)
 {
-    vector<string> knownExpressions;
-    vector<string> unknownExpressions;
+    vector<string> answer;
+    vector<vector<string>> tempExpressions;
+    vector<bool> validBases(10, true);
 
-    // 수식을 아는 것과 모르는 것으로 분리
-    for (const string &expr : expressions)
+    for (int i = 0; i < expressions.size(); i++)
     {
-        if (expr.back() == 'X')
+        vector<string> temp = Split(expressions[i]);
+        if (temp[4] == "X")
         {
-            unknownExpressions.push_back(expr);
+            tempExpressions.push_back(temp);
+        }
+        vector<int> invalidBases = getInvalidBases(temp);
+        for (int base : invalidBases)
+        {
+            validBases[base] = false;
+        }
+    }
+
+    vector<int> validBaseList;
+    for (int i = 2; i < 10; i++)
+    {
+        if (validBases[i])
+        {
+            validBaseList.push_back(i);
+        }
+    }
+
+    for (int i = 0; i < tempExpressions.size(); i++)
+    {
+        int A, B, C, compareC;
+        bool isConsistent = true;
+
+        A = convertBaseToDecimal(stoi(tempExpressions[i][0]), validBaseList[0]);
+        B = convertBaseToDecimal(stoi(tempExpressions[i][2]), validBaseList[0]);
+        if (tempExpressions[i][1] == "+")
+        {
+            C = convertDecimalToBase(A + B, validBaseList[0]);
         }
         else
         {
-            knownExpressions.push_back(expr);
+            C = convertDecimalToBase(A - B, validBaseList[0]);
         }
-    }
 
-    int maxDigit = 2;
-
-    // 최대 숫자를 찾아 최소 진법 후보군을 계산
-    for (const string &expr : expressions)
-    {
-        for (char ch : expr)
+        for (int j = 1; j < validBaseList.size(); j++)
         {
-            if (isdigit(ch))
+            A = convertBaseToDecimal(stoi(tempExpressions[i][0]), validBaseList[j]);
+            B = convertBaseToDecimal(stoi(tempExpressions[i][2]), validBaseList[j]);
+            if (tempExpressions[i][1] == "+")
             {
-                maxDigit = max(maxDigit, ch - '0' + 1);
+                compareC = convertDecimalToBase(A + B, validBaseList[j]);
             }
-        }
-    }
-
-    vector<int> possibleBases;
-    for (int base = max(maxDigit, 2); base <= 9; ++base)
-    {
-        bool validBase = true;
-        for (const string &expr : knownExpressions)
-        {
-            vector<string> words = Split(expr, ' ');
-            
-            string A = words[0];
-            string op = words[1];
-            string B = words[2];
-            string C = words[4];
-
-            if (!isValidExpression(A, B, C, op, base))
+            else
             {
-                validBase = false;
+                compareC = convertDecimalToBase(A - B, validBaseList[j]);
+            }
+            if (compareC != C)
+            {
+                isConsistent = false;
+                tempExpressions[i][4] = "?";
                 break;
             }
         }
-        if (validBase)
+
+        if (isConsistent)
         {
-            possibleBases.push_back(base);
+            tempExpressions[i][4] = to_string(C);
         }
-    }
-    
 
-    vector<string> result;
-    for (const string &expr : unknownExpressions)
-    {
-        result.push_back(solveUnknownExpression(expr, possibleBases));
+        string formattedExpression = "";
+        for (int j = 0; j < 4; j++)
+        {
+            formattedExpression += tempExpressions[i][j] + " ";
+        }
+        formattedExpression += tempExpressions[i][4];
+        answer.push_back(formattedExpression);
     }
 
-    return result;
+    return answer;
 }
