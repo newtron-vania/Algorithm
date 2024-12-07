@@ -1,72 +1,93 @@
-#include <bits/stdc++.h>
+#include <string>
+#include <vector>
+#include <cmath>
 using namespace std;
 
-int offsetY[5] { 0, 0, 0, 1, -1 };
-int offsetX[5] { 0, -1, 1, 0, 0 };
-int result = INT_MAX;
+const int MARKER = 1<<20;
 
-void rotate(vector<vector<int>>& clockHands, int y, int x, int count, bool isClockwise = true)
+int getScore(vector<vector<int>>& clockHands)
 {
-    for (int i = 0; i < 5; ++i)
+    const int n = clockHands.size();
+
+    int ret = 0;
+
+    for(int i = 0; i < n - 1; ++i)
     {
-        int yy = y + offsetY[i];
-        int xx = x + offsetX[i];
-        if (yy == -1 || xx == -1 || yy == clockHands.size() || xx == clockHands.size())
+        for(int j = 0 ; j < n; ++j)
         {
-            continue;
-        }
-        clockHands[yy][xx] = (clockHands[yy][xx] + (isClockwise ? count : -count) + 4) % 4;
+            if(clockHands[i][j] != 0)
+            {
+                int tmp  = 4 - clockHands[i][j];
+
+                ret += tmp;
+
+                clockHands[i][j] = (clockHands[i][j] + tmp) % 4;
+
+                clockHands[i+1][j] = (clockHands[i+1][j] + tmp) % 4;
+
+                if(j > 0)
+                {
+                    clockHands[i+1][j-1] = (clockHands[i+1][j-1] + tmp) % 4;
+                }
+                if(j + 1 < n)
+                {
+                    clockHands[i+1][j+1] = (clockHands[i+1][j+1] + tmp) % 4;
+                }
+                if(i + 2 < n)
+                {
+                    clockHands[i+2][j] = (clockHands[i+2][j] + tmp) % 4;
+                }
+            }
+        }        
     }
+
+    for(const auto v : clockHands.back())
+    {
+        if(v != 0)
+        {
+            ret = MARKER;
+            break;
+        }
+    }
+
+    return ret;
 }
 
-bool check(vector<vector<int>>& clockHands)
-{
-    for (int i = 0; i < clockHands.size(); ++i)
+int solution(vector<vector<int>> clockHands) {
+    int answer = MARKER;
+
+    const int n = clockHands.size();
+
+    int rMax = pow(4,n);
+    for(int r = 0; r <rMax; ++r)
     {
-        for (int j = 0; j < clockHands.size(); ++j)
+        const int i = 0;
+        auto clockHandsTmp = clockHands;
+        int rTmp = r;
+        int tmpSum = 0;
+        for(int j = 0; j < n; ++j)
         {
-            if (clockHands[i][j])
+            int tmp = rTmp%4;
+            rTmp/=4;
+            if(tmp)
             {
-                return false;
+                tmpSum += tmp;
+                clockHandsTmp[i][j] = (clockHandsTmp[i][j] + tmp) % 4;
+                clockHandsTmp[i+1][j] = (clockHandsTmp[i+1][j] + tmp) % 4;
+                if(j > 0)
+                {
+                    clockHandsTmp[i][j-1] = (clockHandsTmp[i][j-1] + tmp) % 4;
+                }
+                if(j + 1 < n)
+                {
+                    clockHandsTmp[i][j+1] = (clockHandsTmp[i][j+1] + tmp) % 4;         
+                }  
             }
         }
-    }
-    return true;
-}
 
-int DFS(vector<vector<int>>& clockHands, int row, int col, int cnt)
-{
-    if (check(clockHands))
-    {
-        return cnt;
+        answer = min(answer,tmpSum + getScore(clockHandsTmp));
     }
-    if (row == clockHands.size())
-    {
-        return INT_MAX;  
-    }
-    if (cnt >= result)
-    {
-        return INT_MAX;
-    }
-    for (int i = 0; i < 4; ++i)
-    {
-        rotate(clockHands, row, col, i, true);
 
-        if (row && clockHands[row - 1][col])
-        {
-            rotate(clockHands, row, col, i, false);
-            continue;
-        }
 
-        int nextRow = (col + 1 == clockHands.size()) ? row + 1 : row;
-        int nextCol = (col + 1) % clockHands.size();
-        result = min(result, DFS(clockHands, nextRow, nextCol, cnt + i));
-        rotate(clockHands, row, col, i, false);
-    }
-    return result;
-}
-
-int solution(vector<vector<int>> clockHands)
-{
-    return DFS(clockHands, 0, 0, 0);
+    return answer;
 }
