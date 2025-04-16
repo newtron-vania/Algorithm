@@ -46,17 +46,24 @@ string solution(long long n, vector<string> bans)
 {
     InitAlpha();
 
-    sort(bans.begin(), bans.end(), alphaSort);
-
-    for (int i = bans.size() - 1; i >= 0; i--) 
+    vector<long long> bansToNum;
+    for(string ban : bans)
     {
-        long long banNum = WordToNum(bans[i]);
+        bansToNum.push_back(WordToNum(ban));
+    }
+    
+    sort(bansToNum.begin(), bansToNum.end());
+
+    int bansLength = bans.size();
+    for (int i = bansLength - 1; i >= 0; i--) 
+    {
+        long long banNum = bansToNum[i];
         if (banNum - i <= n) 
         {
             n += i + 1;
             break;
         }
     }
-
+    
     return NumToWord(n);
 }
