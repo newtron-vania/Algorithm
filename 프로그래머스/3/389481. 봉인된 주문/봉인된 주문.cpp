@@ -1,107 +1,62 @@
-#include <string>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int MAX = 12;
+const int ALPHA_COUNT = 26;
+char alpha[ALPHA_COUNT];
 
-long long power26[MAX];
-
-vector<long long> bannedSpells[MAX];
-
-void init()
+bool alphaSort(string a, string b)
 {
-    power26[0] = 1;
-    
-    for (int len = 1; len < MAX; len++)
+    if(a.size() != b.size()) return a.size() < b.size();
+    return a < b;
+}
+
+void InitAlpha() {
+    for (int i = 0; i < ALPHA_COUNT; i++) 
     {
-        power26[len] = power26[len - 1] * 26;
+        alpha[i] = 'a' + i;
     }
 }
 
-long long stringToNum(string s) 
+long long WordToNum(string word)
 {
-    long long num = 0;
-    
-    for (char c : s) 
+    long long result = 0;
+    for (int i = 0; i < word.size(); i++) 
     {
-        num = num * 26 + (c - 'a');
+        int idx = (word[i] - 'a') + 1;
+        result = result * ALPHA_COUNT + idx;
     }
-    
-    return num;
+    return result;
 }
 
-string numToString(long long num, int len) 
+string NumToWord(long long num) 
 {
-    string s(len, 'a');
-    
-    for (int i = len - 1; i >= 0; i--) 
+    string result = "";
+
+    while (num > 0) 
     {
-        s[i] = char('a' + (num % 26));
-        
-        num /= 26;
+        num--;
+        int index = num % ALPHA_COUNT;
+        result = alpha[index] + result;
+        num /= ALPHA_COUNT;
     }
-    
-    return s;
+    return result;
 }
 
-string solution(long long n, vector<string> bans) {
-    init();
-    
-    for (string ban : bans) 
+string solution(long long n, vector<string> bans) 
+{
+    InitAlpha();
+
+    sort(bans.begin(), bans.end(), alphaSort);
+
+    for (int i = bans.size() - 1; i >= 0; i--) 
     {
-        int len = ban.size();
-        long long num = stringToNum(ban);
-        
-        bannedSpells[len].push_back(num);
-    }
-    
-    for (int len = 1; len < MAX; len++)
-    {
-        sort(bannedSpells[len].begin(), bannedSpells[len].end());
-    }
-    
-    for (int len = 1; len < MAX; len++)
-    {
-        long long totalStrings = power26[len];
-        long long bannedCnt = bannedSpells[len].size();
-        long long validCnt = totalStrings - bannedCnt;
-        
-        if (n > validCnt) 
+        long long banNum = WordToNum(bans[i]);
+        if (banNum - i <= n) 
         {
-            n -= validCnt;
-            
-            continue;
+            n += i + 1;
+            break;
         }
-        
-        // 길이 len 내에서 n번째 유효 주문 탐색
-        long long k = n; 
-        long long prev = -1;
-        long long candidate = -1;
-        
-        for (long long bannedNum : bannedSpells[len])
-        {
-            long long gap = bannedNum - (prev + 1);
-            
-            // k번째 주문은 gap 안에 있으므로, (prev + k)가 그 숫자값
-            if (k <= gap) 
-            {
-                candidate = prev + k;
-                
-                break;
-            }
-            
-            k -= gap;
-            prev = bannedNum;
-        }
-        
-        if (candidate == -1)
-        {
-            candidate = prev + k;
-        }
-        
-        return numToString(candidate, len);
     }
 
-    return "";
+    return NumToWord(n);
 }
