@@ -8,7 +8,8 @@ const int MAX = 100001;
 const int DIV_VALUE = 1000000007;
 int dp[MAX];
 
-int solution(int n, vector<int> moneys) {
+int solution(int n, vector<int> moneys) 
+{
     int answer = 0;
     dp[0] = 1;
     
