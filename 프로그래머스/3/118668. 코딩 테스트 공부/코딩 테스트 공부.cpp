@@ -1,54 +1,48 @@
-#include <string>
-#include <vector>
-#define INF 10001
+#include <bits/stdc++.h>
 
 using namespace std;
+
+const int INF = 10001;
 
 int solution(int alp, int cop, vector<vector<int>> problems)
 {
     int dp[151][151]; // dp[i][j] : 알고력 i, 코딩력 j를 달성하기 위한 최소 시간
     fill(&dp[0][0], &dp[150][151], INF); // 모든 값을 INF로 초기화
-
+    
     int goal_alp = 0, goal_cop = 0;
-
-    // 목표 알고력과 코딩력 계산
-    for (auto p : problems)
+    
+    for(auto problem : problems)
     {
-        goal_alp = max(goal_alp, p[0]);
-        goal_cop = max(goal_cop, p[1]);
+        goal_alp = max(goal_alp, problem[0]);
+        goal_cop = max(goal_cop, problem[1]);
     }
-
-    // 초기 알고력과 코딩력이 목표보다 높으면 줄이기
-    alp = min(alp, goal_alp);
-    cop = min(cop, goal_cop);
-
-    dp[alp][cop] = 0; // 시작점 설정
-
-    // dp 갱신
-    for (int i = alp; i <= goal_alp; i++)
+    
+    int min_alp = min(alp, goal_alp);
+    int min_cop = min(cop, goal_cop);
+    
+    dp[min_alp][min_cop] = 0;
+    
+    for(int i = min_alp; i <= goal_alp; i++)
     {
-        for (int j = cop; j <= goal_cop; j++)
+        for(int j = min_cop; j <= goal_cop; j++)
         {
-            // 알고력 증가
-            if (i < goal_alp)
+            if(i < goal_alp)
             {
                 dp[i + 1][j] = min(dp[i + 1][j], dp[i][j] + 1);
             }
-
-            // 코딩력 증가
-            if (j < goal_cop)
+            
+            if(j < goal_cop)
             {
                 dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + 1);
             }
-
-            // 문제 해결 시 능력치 증가
-            for (auto p : problems)
+            
+            for(auto problem : problems)
             {
-                if (p[0] <= i && p[1] <= j)
+                if(problem[0] <= i && problem[1] <= j)
                 {
-                    int next_alp = min(i + p[2], goal_alp);
-                    int next_cop = min(j + p[3], goal_cop);
-                    dp[next_alp][next_cop] = min(dp[next_alp][next_cop], dp[i][j] + p[4]);
+                    int next_alp = min(goal_alp, i + problem[2]);
+                    int next_cop = min(goal_cop, j + problem[3]);
+                    dp[next_alp][next_cop] = min(dp[next_alp][next_cop], dp[i][j] + problem[4]);
                 }
             }
         }
