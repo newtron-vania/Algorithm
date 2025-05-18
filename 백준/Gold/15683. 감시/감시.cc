@@ -5,23 +5,24 @@ const int DX[4] = {1, 0, -1, 0};
 const int DY[4] = {0, 1, 0, -1};
 
 int n, m;
-int board1[10][10];
-int board2[10][10];
-vector<pair<int, int>> cctv;
+int board1[10][10]; // 최초에 입력받은 board를 저장할 변수
+int board2[10][10]; // 사각 지대의 개수를 세기 위해 사용할 변수
+vector<pair<int, int>> cctv; // cctv의 좌표를 저장할 변수
 
-bool OOB(int a, int b)
+bool IsValid(int a, int b)
 {
     return a < 0 || a >= n || b < 0 || b >= m;
 }
 
-void upd(int x, int y, int dir)
+// (x, y)에서 dir 방향으로 진행하면서 벽을 만날 때까지 지나치는 모든 빈칸을 7로 바꿈
+void ScanCCTV(int x, int y, int dir)
 {
     dir %= 4;
     while (true)
     {
         x += DX[dir];
         y += DY[dir];
-        if (OOB(x, y) || board2[x][y] == 6)
+        if (IsValid(x, y) || board2[x][y] == 6)
             return;
         if (board2[x][y] != 0)
             continue;
@@ -69,30 +70,30 @@ int main()
 
             if (board1[x][y] == 1)
             {
-                upd(x, y, dir);
+                ScanCCTV(x, y, dir);
             }
             else if (board1[x][y] == 2)
             {
-                upd(x, y, dir);
-                upd(x, y, dir + 2);
+                ScanCCTV(x, y, dir);
+                ScanCCTV(x, y, dir + 2);
             }
             else if (board1[x][y] == 3)
             {
-                upd(x, y, dir);
-                upd(x, y, dir + 1);
+                ScanCCTV(x, y, dir);
+                ScanCCTV(x, y, dir + 1);
             }
             else if (board1[x][y] == 4)
             {
-                upd(x, y, dir);
-                upd(x, y, dir + 1);
-                upd(x, y, dir + 2);
+                ScanCCTV(x, y, dir);
+                ScanCCTV(x, y, dir + 1);
+                ScanCCTV(x, y, dir + 2);
             }
             else
             {
-                upd(x, y, dir);
-                upd(x, y, dir + 1);
-                upd(x, y, dir + 2);
-                upd(x, y, dir + 3);
+                ScanCCTV(x, y, dir);
+                ScanCCTV(x, y, dir + 1);
+                ScanCCTV(x, y, dir + 2);
+                ScanCCTV(x, y, dir + 3);
             }
         }
 
