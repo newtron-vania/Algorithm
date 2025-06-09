@@ -9,8 +9,8 @@ using namespace std;
 // 각 유형 별 상담원 수에 따른 대기 시간을 계산하는 함수
 int CaculateTime(int type, int count, vector<vector<int>>& reqs);
 
-// 메인 솔루션 함수
-int solution(int k, int n, vector<vector<int>> reqs) {
+int solution(int k, int n, vector<vector<int>> reqs) 
+{
     int answer = 0; // 최종 답
     int max_num = n-k+1; // 최대 상담원 수
     vector<vector<vector<int>>> req_sep(k+1, vector<vector<int>>()); // 요청을 유형별로 분리하여 저장
