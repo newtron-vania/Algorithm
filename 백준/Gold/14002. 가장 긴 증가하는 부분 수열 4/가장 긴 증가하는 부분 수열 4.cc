@@ -1,82 +1,82 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+const int MAX_COUNT = 2001;
+int n;
+int values[MAX_COUNT]; 
+vector<pair<int, int>> arr;
 
-const int MAX_INT = 1'000'000;
-
-int binary_search(const vector<int>& answer, int val) 
+void input()
 {
-    int start = 0;
-    int end = answer.size() - 1;
-
-    while (start <= end) 
+    cin >> n;
+    for(int i = 0; i < n; i++)
     {
-        int mid = (start + end) / 2;
-        if (answer[mid] >= val) 
-        {
-            end = mid - 1;
-        } 
-        else 
-        {
-            start = mid + 1;
-        }
+        int a;
+        cin >> a;
+        values[i] = a;
     }
-    return start;
 }
 
-int main() 
+
+int binary_search(vector<int>& sorted, int num)
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+    int left = 0;
+    int right = sorted.size() - 1;
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
 
-    int n;
-    cin >> n;
-    int arr[MAX_INT];
+        if (sorted[mid] < num)
+        {
+            left = mid + 1;
+        }
+        else  
+        {
+            right = mid - 1;
+        }
+    }
     
+    return left;
+}
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    input();
+    
+    vector<int> sorted;
     for (int i = 0; i < n; i++) 
     {
-        cin >> arr[i];
+        int val = values[i];
+        int idx = binary_search(sorted, val);
+
+        if (idx == sorted.size()) 
+        {
+            sorted.push_back(val);
+        } else 
+        {
+            sorted[idx] = val;
+        }
+        arr.push_back({val, idx});
     }
-
-    vector<int> answer;
-    answer.push_back(-1000000001);
-
-    pair<int, int> arr_info[MAX_INT];
-
-    for (int i = 0; i < n; i++) 
+    
+    int idx = sorted.size() - 1;
+    vector<int> result(sorted.size());
+    for(int i = arr.size() - 1; i >= 0 && idx >= 0; i--)
     {
-        if (answer.back() < arr[i]) 
+        if(arr[i].second == idx)
         {
-            answer.push_back(arr[i]);
-            arr_info[i] = {arr[i], static_cast<int>(answer.size()) - 1};
-        } 
-        else 
-        {
-            int result = binary_search(answer, arr[i]);
-            answer[result] = arr[i];
-            arr_info[i] = {arr[i], result};
+            result[idx] = arr[i].first;
+            idx--;
         }
     }
-
-    cout << answer.size() - 1 << '\n';
-
-    int cnt = answer.size() - 1;
-    vector<int> lis(cnt);
-
-    for (int i = n - 1; i >= 0; i--) 
+    
+    
+    cout << result.size() << endl;
+    
+    for(int r : result)
     {
-        if (arr_info[i].second == cnt) 
-        {
-            lis[cnt - 1] = arr_info[i].first;
-            cnt--;
-            if (cnt == 0) break;
-        }
+        cout << r << " ";
     }
-
-    for (int i = 0; i < lis.size(); i++) 
-    {
-        cout << lis[i] << (i != lis.size() - 1 ? ' ' : '\n');
-    }
-
-    return 0;
 }
