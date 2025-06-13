@@ -25,7 +25,8 @@ vector<int> solution(vector<int> fees, vector<string> records)
         vector<string> str = Split(record, ' ');
         int time = stoi(str[0].substr(0,2)) * 60 + stoi(str[0].substr(3,2));
         //입차 시간 등록
-        if(str[2] == "IN"){
+        if(str[2] == "IN")
+        {
             recordDict[str[1]] = time;
         }
         else
