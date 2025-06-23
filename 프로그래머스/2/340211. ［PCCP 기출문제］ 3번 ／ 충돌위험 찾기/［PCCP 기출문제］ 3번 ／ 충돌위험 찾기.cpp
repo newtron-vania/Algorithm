@@ -28,7 +28,7 @@ int solution(vector<vector<int>> points, vector<vector<int>> routes)
             {
                 robotRoutes[num].push_back(p);
                 points[end - 1][1] > p.second ? p.second++ : p.second--;
-            }      
+            }
         }
         robotRoutes[num].push_back(p);
         
