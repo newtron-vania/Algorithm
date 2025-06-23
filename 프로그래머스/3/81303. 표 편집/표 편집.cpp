@@ -10,6 +10,55 @@ struct Node
         : n(n), prev(prev), next(next) {}
 };
 
+void ProcessCommand(Node*& select, stack<Node*>& remove_table, const string& c)
+{
+    if (c[0] == 'C')
+    {
+        remove_table.push(select);
+
+        if (select->prev)
+            select->prev->next = select->next;
+
+        if (select->next)
+            select->next->prev = select->prev;
+
+        Node* nextNode = select->next ? select->next : select->prev;
+        select = nextNode;
+    }
+    else if (c[0] == 'Z')
+    {
+        Node* restored = remove_table.top();
+        remove_table.pop();
+
+        if (restored->prev)
+            restored->prev->next = restored;
+
+        if (restored->next)
+            restored->next->prev = restored;
+    }
+    else
+    {
+        int count = stoi(c.substr(2));
+
+        if (c[0] == 'U')
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (select->prev)
+                    select = select->prev;
+            }
+        }
+        else if (c[0] == 'D')
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (select->next)
+                    select = select->next;
+            }
+        }
+    }
+}
+
 string solution(int n, int k, vector<string> cmd)
 {
     string answer(n, 'O');
@@ -33,51 +82,7 @@ string solution(int n, int k, vector<string> cmd)
 
     for (const auto& c : cmd)
     {
-        if (c[0] == 'C')
-        {
-            remove_table.push(select);
-
-            if (select->prev)
-                select->prev->next = select->next;
-
-            if (select->next)
-                select->next->prev = select->prev;
-
-            Node* nextNode = select->next ? select->next : select->prev;
-            select = nextNode;
-        }
-        else if (c[0] == 'Z')
-        {
-            Node* restored = remove_table.top();
-            remove_table.pop();
-
-            if (restored->prev)
-                restored->prev->next = restored;
-
-            if (restored->next)
-                restored->next->prev = restored;
-        }
-        else
-        {
-            int count = stoi(c.substr(2));
-
-            if (c[0] == 'U')
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    if (select->prev)
-                        select = select->prev;
-                }
-            }
-            else if (c[0] == 'D')
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    if (select->next)
-                        select = select->next;
-                }
-            }
-        }
+        ProcessCommand(select, remove_table, c);
     }
 
     while (!remove_table.empty())
