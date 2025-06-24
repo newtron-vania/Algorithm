@@ -1,43 +1,34 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-struct TrieNode
+bool binary_search(const vector<string>& s, const string& query)
 {
-private:
-    TrieNode* children[26] = { nullptr};
-    bool isEnd = false;
-public:
+    int left = 0, right = s.size() - 1;
 
-    void insert(const string& word)
+    while (left <= right)
     {
-        TrieNode* node = this;
-        for (char c : word)
+        int mid = (left + right) / 2;
+        const string& target = s[mid];
+
+        int cmp = target.compare(0, query.size(), query);
+
+        if (cmp == 0)
         {
-            int idx = c - 'a';
-            if (node->children[idx] == nullptr)
-            {
-                node->children[idx] = new TrieNode();
-            }
-            node = node->children[idx];
+            return true;
         }
-        node->isEnd = true;
+        else if (target < query)
+        {
+            left = mid + 1;
+        }
+        else
+        {
+            right = mid - 1;
+        }
     }
 
-    bool startsWith(const string& prefix)
-    {
-        TrieNode* node = this;
-        for (char c : prefix)
-        {
-            int idx = c - 'a';
-            if (node->children[idx] == nullptr)
-            {
-                return false;
-            }
-            node = node->children[idx];
-        }
-        return true;
-    }
-};
+    return false;
+}
 
 int main()
 {
@@ -47,28 +38,26 @@ int main()
     int n, m;
     cin >> n >> m;
 
-    TrieNode* root = new TrieNode();
-
+    vector<string> s(n);
     for (int i = 0; i < n; ++i)
     {
-        string s;
-        cin >> s;
-        root->insert(s);
+        cin >> s[i];
     }
 
-    int count = 0;
+    sort(s.begin(), s.end());
 
+    int count = 0;
     for (int i = 0; i < m; ++i)
     {
         string query;
         cin >> query;
-        if (root->startsWith(query))
+
+        if (binary_search(s, query))
         {
             count++;
         }
     }
 
     cout << count << '\n';
-
     return 0;
 }
