@@ -2,34 +2,6 @@
 
 using namespace std;
 
-bool binary_search(const vector<string>& s, const string& query)
-{
-    int left = 0, right = s.size() - 1;
-
-    while (left <= right)
-    {
-        int mid = (left + right) / 2;
-        const string& target = s[mid];
-
-        int cmp = target.compare(0, query.size(), query);
-
-        if (cmp == 0)
-        {
-            return true;
-        }
-        else if (target < query)
-        {
-            left = mid + 1;
-        }
-        else
-        {
-            right = mid - 1;
-        }
-    }
-
-    return false;
-}
-
 int main()
 {
     ios::sync_with_stdio(false);
@@ -52,7 +24,8 @@ int main()
         string query;
         cin >> query;
 
-        if (binary_search(s, query))
+        auto it = lower_bound(s.begin(), s.end(), query);
+        if (it != s.end() && it->compare(0, query.size(), query) == 0)
         {
             count++;
         }
