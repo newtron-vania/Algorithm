@@ -2,34 +2,24 @@
 
 using namespace std;
 
-/**
-3 * 1인 경우는 1개
-3 * 2인 경우는 3 * 1 + 3 * 1을 제외한 2개를 만들 수 있다.
-3 * 3인 경우는 2 + 1, 1 + 2를 제외한 5개를 만들 수 있다.
-n이 4 이상인 n * 3 타일 또한 새로운 모양의 타일을 만들 수 있다.도형을 회전해 보면 4인 경우 2개, 5인 경우 2개, 6인 경우 4개인 것을 알 수 있다.
-4인 경우에서 7인 경우는 3 * 1 타일이 중간에 들어가면 된다. 5, 6인 경우에도 동일하다.
-따라서 4 + 3k, 5 + 3k인 경우 새로운 조합의 타일이 2개씩, 6 + 3k인 경우 4개가 생긴다.
-**/
 
-long long dp[100002] = { 1, 1, 3, 10, 23, 62, 170, };
-long long sum[100002] = { 1, 1, 3, 11, 24, 65, 181, };
+long long dp[100002] = { 1, 1, 3, 10, 23, 62, 170 };
+long long sum[100002] = { 1, 1, 3, 11, 24, 65, 181 };
 
-const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
 
 int solution(int n)
 {
 	for (int i = 7; i <= n; i++) 
     {
 		dp[i] = dp[i - 1];
-		dp[i] += dp[i - 2] * 2;
-		dp[i] += dp[i - 3] * 5;
-		dp[i] += sum[i - 4] * 2;
-		dp[i] += sum[i - 5] * 2;
-		dp[i] += sum[i - 6] * 4;
-		dp[i] %= INF;
+		dp[i] = (dp[i] + dp[i - 2] * 2) % MOD;
+		dp[i] = (dp[i] + dp[i - 3] * 5) % MOD;
+		dp[i] = (dp[i] + sum[i - 4] * 2) % MOD;
+		dp[i] = (dp[i] + sum[i - 5] * 2) % MOD;
+		dp[i] = (dp[i] + sum[i - 6] * 4) % MOD;
 
-		sum[i] = dp[i] + sum[i - 3];
-		sum[i] %= INF;
+		sum[i] = (dp[i] + sum[i - 3]) % MOD;
 	}
 
 	return dp[n];
