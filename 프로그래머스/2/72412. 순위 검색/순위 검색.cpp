@@ -4,7 +4,8 @@ using namespace std;
 
 vector<string> split(string input, char delimiter);
 
-vector<int> solution(vector<string> infos, vector<string> querys) {
+vector<int> solution(vector<string> infos, vector<string> querys) 
+{
     vector<int> answer;
     
     unordered_map<string, vector<int>> map_infos;
