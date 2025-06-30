@@ -5,12 +5,12 @@
 
 using namespace std;
 
-int solution(vector<int> food_times, long long k) 
+int solution(vector<int> dfas, long long k) 
 {
     int answer = -1; 
-    int size = food_times.size();
+    int size = dfas.size();
 
-    vector<int> food_times_sorter = food_times;
+    vector<int> food_times_sorter = dfas;
     food_times_sorter.push_back(0);
     sort(food_times_sorter.begin(), food_times_sorter.end());
 
@@ -30,7 +30,7 @@ int solution(vector<int> food_times, long long k)
 
         while(true)
         {
-            if(food_times[idx] >= limit)
+            if(dfas[idx] >= limit)
             {
                 count--;
                 if(count < 0)
