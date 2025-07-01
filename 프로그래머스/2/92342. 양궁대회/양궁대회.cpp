@@ -1,69 +1,66 @@
-#include <string>
-#include <vector>
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-vector<int> answer;
-int mx = 0;
-int N;
-
-void solve(int cnt, int score, vector<int> ap, vector<int> li)
+vector<int> solution(int n, vector<int> info) 
 {
-    if(cnt == N || score == 10)
+    vector<int> answer(11, -1);
+    
+    int max_diff = -1;
+    
+    for(int i = 0; i < (1 << 11); i++)
     {
-        if(score == 10 && cnt != N)
-            li[score] = N - cnt;
-        int a = 0, l = 0;
-        for(int i=0; i<=10; i++)
+        int lion_score = 0;
+        int peach_score = 0;
+        int arrow_count = n;
+        vector<int> lion_info(11, 0);
+        for(int j = 10; j >= 0; j--)
         {
-            if(ap[i] == 0 && li[i] == 0)
-                continue;
-            if(ap[i] >= li[i])
-                a += 10 - i;
-            else
-                l += 10 - i;
-        }
-        
-        if(mx < l - a && l - a != 0)
-        {
-            mx = l - a;
-            answer = li;
-            return;
-        }
-        else if(mx == l - a)
-        {
-            for(int i = 10; i>=0; i--)
+            if(i & (1 << j))
             {
-                if(answer[i] < li[i])
+                if(arrow_count > info[10 - j])
                 {
-                    answer = li;
+                    lion_score += j;
+                    arrow_count -= info[10 - j] + 1;
+                    lion_info[10 - j] = info[10 - j] + 1;
+                }
+                else if(info[10 - j] > 0)
+                {
+                    peach_score += j;
+                }
+            }
+            else if(info[10 - j] > 0)
+            {
+                peach_score += j;
+            }
+            
+        }
+        lion_info[10] += arrow_count;
+        
+        int diff = lion_score - peach_score;
+        if(diff <= 0) continue;
+        if(diff > max_diff)
+        {
+            max_diff = diff;
+            answer = lion_info;
+        }
+        else if (diff == max_diff)
+        {
+            // 낮은 점수 많이 쏜 걸 우선시
+            for (int i = 10; i >= 0; i--) 
+            {
+                if (lion_info[i] > answer[i]) 
+                {
+                    answer = lion_info;
+                    break;
+                } 
+                else if (lion_info[i] < answer[i]) 
+                {
                     break;
                 }
-                else if(answer[i] > li[i])
-                    break;
             }
         }
-        return;
     }
     
-    solve(cnt, score + 1, ap, li);
-    if(cnt + ap[score] + 1 <= N)
-    {
-        li[score] = ap[score] + 1;
-        solve(cnt + li[score], score + 1, ap, li);
-    }
-}
-vector<int> solution(int n, vector<int> info) {
-    N = n;
-    
-    vector<int> v;
-    v.resize(info.size());
-    answer.resize(info.size());
-    solve(0, 0, info, v);
-    if(mx == 0)
-    {
-        return {-1};
-    }
-    return answer;
+    return max_diff > 0 ? answer : vector<int>{ -1 };
 }
