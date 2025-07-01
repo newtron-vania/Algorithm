@@ -31,7 +31,7 @@ int main()
         
         int value = combine[(1 << input) - 1];
         
-        long long output = 1LL * value * 2 - 1;
+        auto output = 1L * value * 2 - 1;
         
         cout << output << endl;
     }
