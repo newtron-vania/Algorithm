@@ -1,50 +1,43 @@
 #include <bits/stdc++.h>
-#include <vector>
-#include <algorithm>
 
 using namespace std;
 
-int main() {
-    int N, X;
-    cin >> N >> X;
+int main()
+{
+    int n, x;
+    cin >> n >> x;
     
-    vector<int> graph(N, 0);
-    for(int i = 0; i < N; i++) {
-        int x;
-        cin >> x;
-        graph[i] = x;
-    }
+    int* val = new int[n](); 
     
-    int maxSum = 0;
-    int count = 0;
-    int sum = 0;
-    for(int i = 0; i < N; i++) {
-        sum += graph[i];
-        if(i >= X) {
-            sum -= graph[i - X];
-        }
-        if(maxSum <= sum)
-        {
-            if(maxSum == sum)
-            {
-                count++;
-            }
-            else
-            {
-                maxSum = sum;
-                count = 1;
-            }
-        }
-    }
-    
-    if(maxSum > 0)
+    for(int i = 0; i < n; i++)
     {
-        cout << maxSum << endl;
-        cout << count << endl;
+        int cnt;
+        cin >> cnt;
+        val[i] = cnt;
+    }
+    
+    int sum_max = 0;
+    int sum = 0;
+    int cnt = 0;
+    for(int i = 0; i < n; i++)
+    {
+        sum += val[i];
+        if(i >= x) sum -= val[i - x]; 
+        if(sum_max == sum) cnt++;
+        if(sum_max < sum) 
+        {
+            cnt = 1;
+            sum_max = sum;
+        }
+    }
+    
+    if(sum_max > 0)
+    {
+        cout << sum_max << endl;
+        cout << cnt << endl;
     }
     else
     {
         cout << "SAD" << endl;
     }
-    return 0;
 }
