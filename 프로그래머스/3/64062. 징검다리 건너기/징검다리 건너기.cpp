@@ -7,7 +7,7 @@ bool binary_check(vector<int>& stones, int k, int mid)
     int cnt = 0;
     for(int i = 0; i < stones.size(); i++)
     {
-        if(stones[i] <= mid) cnt += 1;
+        if(stones[i] - mid < 0) cnt += 1;
         else cnt = 0;
         if(cnt >= k) return false;
     }
@@ -23,14 +23,14 @@ int solution(vector<int> stones, int k)
     while(left <= right)
     {
         int mid = (left + right) / 2;
-        if(!binary_check(stones, k, mid))
+        if(binary_check(stones, k, mid))
         {
-            right = mid - 1;
             answer = mid;
+            left = mid + 1;
         }
         else
         {
-            left = mid + 1;
+            right = mid - 1;
         }
     }
     return answer;
