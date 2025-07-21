@@ -18,11 +18,9 @@ int solution(vector<int> food_times, long long k)
     while(target_idx < size)
     {
         height = food_times_sorter[target_idx];
-        long long value = 1LL * (height - before_height) * (size - target_idx);
-        // printf("height = %d  value = %lld \n", height, value);
+        long long value = 1LL * (height - before_height) * (size - target_idx);\
         if(k < value)
         {
-            // printf("Break!");
             break;
         }
         
