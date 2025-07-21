@@ -1,51 +1,39 @@
-#include <bits/stdc++.h>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
-int solution(vector<int> food_times, long long k) 
-{
-    int answer = -1; 
+int solution(vector<int> food_times, long long k) {
+    int answer = -1;
     int size = food_times.size();
-    
+
     vector<int> food_times_sorter = food_times;
-    
+    food_times_sorter.push_back(0);
     sort(food_times_sorter.begin(), food_times_sorter.end());
-    
-    int height = food_times_sorter.front();
-    int before_height = 0;
-    int max_height = food_times_sorter.back();
-    int target_idx = 0;
-    while(target_idx < size)
-    {
-        height = food_times_sorter[target_idx];
-        long long value = 1LL * (height - before_height) * (size - target_idx);\
-        if(k < value)
-        {
-            break;
+
+    for(int i = 1; i <= size; i++){
+        long long time = 1LL * (food_times_sorter[i] - food_times_sorter[i-1]) * (size - i+1);
+        if(time <= k){
+            k -= time;
+            continue;
         }
-        
-        k -= value;
-        
-        // 다음 높이의 idx 탐색
-        before_height = height;
-        while(target_idx < size && height == food_times_sorter[target_idx])
-        {
-            target_idx++;
+
+        long long count = k % (size - i + 1);
+        int idx = 0;
+        long long limit = food_times_sorter[i];
+
+        while(true){
+            if(food_times[idx] >= limit){
+                count--;
+                if(count < 0)
+                    break;
+            }
+            idx++;
         }
+        answer = idx;
+        break;
     }
-    
-    if(target_idx == size) return -1;
-    k = k % (size - target_idx) + 1;
-    
-    int result_idx = 0;
-    while(k > 0)
-    {
-        if(food_times[result_idx] >= height)
-        {
-            k--;
-        }
-        result_idx++;
-    }
-    
-    return result_idx;
+    return answer >= 0 ? answer + 1 : -1;
 }
