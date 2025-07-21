@@ -1,46 +1,53 @@
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int solution(vector<int> dfas, long long k) 
+int solution(vector<int> food_times, long long k) 
 {
     int answer = -1; 
-    int size = dfas.size();
-
-    vector<int> food_times_sorter = dfas;
-    food_times_sorter.push_back(0);
+    int size = food_times.size();
+    
+    vector<int> food_times_sorter = food_times;
+    
     sort(food_times_sorter.begin(), food_times_sorter.end());
-
-    for(int i = 1; i <= size; i++)
+    
+    int height = food_times_sorter.front();
+    int before_height = 0;
+    int max_height = food_times_sorter.back();
+    int target_idx = 0;
+    while(target_idx < size)
     {
-        long long time = 1LL * (food_times_sorter[i] - food_times_sorter[i-1]) * (size - i+1);
-
-        if(time <= k)
+        height = food_times_sorter[target_idx];
+        long long value = 1LL * (height - before_height) * (size - target_idx);
+        // printf("height = %d  value = %lld \n", height, value);
+        if(k < value)
         {
-            k -= time;
-            continue;
+            // printf("Break!");
+            break;
         }
-
-        long long count = k % (size - i + 1);
-        int idx = 0;
-        long long limit = food_times_sorter[i];
-
-        while(true)
+        
+        k -= value;
+        
+        // 다음 높이의 idx 탐색
+        before_height = height;
+        while(target_idx < size && height == food_times_sorter[target_idx])
         {
-            if(dfas[idx] >= limit)
-            {
-                count--;
-                if(count < 0)
-                    break;
-            }
-            idx++;
+            target_idx++;
         }
-        answer = idx;
-        break;
     }
-
-    return answer >= 0 ? answer + 1 : -1;
+    
+    if(target_idx == size) return -1;
+    k = k % (size - target_idx) + 1;
+    
+    int result_idx = 0;
+    while(k > 0)
+    {
+        if(food_times[result_idx] >= height)
+        {
+            k--;
+        }
+        result_idx++;
+    }
+    
+    return result_idx;
 }
