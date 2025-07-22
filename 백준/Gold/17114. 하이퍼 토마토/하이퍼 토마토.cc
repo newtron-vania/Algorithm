@@ -6,59 +6,59 @@ using namespace std;
 
 bool visited[MAX_VALUE];
 int dimension[11];
-int dist[11] = {1, };
 
-int BFS(queue<int> &q, int total, int visited_count)
+int BFS(queue<int> &q, int size, int visited_count)
 {
     int day = 0;
     queue<int> cur_q;
-    while (!q.empty() && !(visited_count == total))
+    while (!q.empty() && !(visited_count == size))
     {
         day++;
         cur_q = std::move(q);
-        while (!cur_q.empty() && !(visited_count == total))
+        while (!cur_q.empty() && !(visited_count == size))
         {
-            auto index = cur_q.front();
+            auto cp = cur_q.front();
             cur_q.pop();
 
-            for (int i = 0; i < 22; i++)
+            int dimension_value = 1;
+            for (int i = 0; i < 11; i++)
             {
-                int k = i / 2,
-                    sign = 1 - 2 * (i % 2),
-                    next_index = index + sign * dist[k],
-                    dim_size = dist[k] * dimension[k],
-                    lmod = index % dim_size,
-                    nmod = next_index % dim_size;
+                if (i != 0)
+                    dimension_value *= dimension[i - 1];
 
-                if (next_index >= 0 && next_index < total && sign * (nmod - lmod) > 0 && !visited[next_index])
+                int dimension_check_value = dimension_value * dimension[i];
+                for (int v : {cp + dimension_value, cp - dimension_value})
                 {
-                    visited[next_index] = true;
+                    if (v < 0 || v >= size)
+                        continue;
+                    if (visited[v])
+                        continue;
+                    if ((v / dimension_check_value) != (cp / dimension_check_value))
+                        continue;
+
+                    visited[v] = true;
                     visited_count++;
-                    q.push(next_index);
+
+                    q.push(v);
                 }
             }
         }
     }
 
-    return visited_count == total ? day : -1;
+    return visited_count == size ? day : -1;
 }
 
 int main()
 {
     queue<int> q;
-    int total = 1;
+    int size = 1;
     for (int i = 0; i < 11; i++)
     {
         scanf("%d", &dimension[i]);
-        total *= dimension[i];
-    }
-
-    for(int i = 0; i < 11; i++)
-    {
-        if(i) dist[i] = dimension[i - 1] * dist[i - 1];
+        size *= dimension[i];
     }
     int visited_count = 0;
-    for (int i = 0; i < total; i++)
+    for (int i = 0; i < size; i++)
     {
         int v;
         scanf("%d", &v);
@@ -73,7 +73,7 @@ int main()
         }
     }
 
-    cout << BFS(q, total, visited_count) << endl;
+    cout << BFS(q, size, visited_count) << endl;
 
     return 0;
 }
