@@ -1,60 +1,33 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int lis[1001];
-
-int binarysearch(int left, int right, int target) {
-	int mid;
-
-    // lis 배열에 들어갈 target=arr[i]의 위치를 이분탐색으로 찾기
-
-	while (left < right) {
-		mid = (left + right) / 2; // 중간값 설정
-
-		if (lis[mid] < target) {
-			left = mid + 1;
-		}
-		else {
-			right = mid;
-		}
-	}
-	return right;
-}
-
 int main()
 {
-    ios::sync_with_stdio(0);
-	cin.tie(0);
-
-    int count;
-
-    int arr[1001];
-    cin >> count;
-    for(int i = 0; i < count; i++)
+    int n;
+    scanf("%d", &n);
+    
+    int arr[201];
+    
+    for(int i = 0; i < n; i++)
     {
-        cin >> arr[i];
+        scanf("%d", &arr[i]);
     }
-
-    lis[0] = arr[0];
-
-    int j = 0;
-    int i = 1;
-    while(i < count)
+    
+    vector<int> sorted;
+    for(int i = 0; i < n; i++)
     {
-        if(lis[j] < arr[i])
+        int val = arr[i];
+        if(sorted.size() == 0 || sorted.back() <= val)
         {
-            lis[++j] = arr[i];
+            sorted.push_back(val);
         }
         else
         {
-            int idx = binarysearch(0, j, arr[i]);
-            lis[idx] = arr[i];
+            int idx = lower_bound(sorted.begin(), sorted.end(), val) - sorted.begin();
+            sorted[idx] = val; 
         }
-        i += 1;
     }
-
-    cout << count - (j + 1);
-
-    return 0;
+    
+    cout << n - sorted.size();
 }
