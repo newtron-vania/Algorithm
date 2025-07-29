@@ -42,5 +42,5 @@ int solution(int distance, vector<int> rocks, int n)
             answer = mid;
         }
     }
-    return answer;
+    return end;
 }
