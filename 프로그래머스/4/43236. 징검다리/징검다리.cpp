@@ -34,12 +34,11 @@ int solution(int distance, vector<int> rocks, int n)
         
         if(cnt > n)
         {
-            end = mid-1;
+            end = mid - 1;
         }
         else
         {
-            start = mid+1;
-            answer = mid;
+            start = mid + 1;
         }
     }
     return end;
