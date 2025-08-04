@@ -33,6 +33,6 @@ int main()
     cin >> n;
     dp[0] = 1;
     dp[2] = 3;
-    cout << DFS(n) << '\n';
+    cout << DFS(n);
     return 0;
 }
