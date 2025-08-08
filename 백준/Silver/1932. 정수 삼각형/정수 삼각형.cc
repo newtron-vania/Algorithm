@@ -10,7 +10,7 @@ int main()
     int F;
     cin >> F;
 
-    int dp[500][500]; // 최대 크기는 문제 조건에 맞춰 충분히 크게 설정
+    int dp[500][500];
     for (int i = 0; i < F; i++)
     {
         for (int j = 0; j <= i; j++)
@@ -35,6 +35,6 @@ int main()
         ans = max(ans, dp[F - 1][j]);
     }
 
-    cout << ans << "\n";
+    cout << ans;
     return 0;
 }
