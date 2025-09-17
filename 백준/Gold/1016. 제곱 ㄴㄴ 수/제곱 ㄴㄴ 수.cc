@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int doubles[1000001];
+bool doubles[1000001];
 
 int main()
 {
