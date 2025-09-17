@@ -52,15 +52,15 @@ string solution(long long n, vector<string> bans)
         bansToNum.push_back(WordToNum(ban));
     }
     
-    sort(bansToNum.begin(), bansToNum.end());
+    sort(bansToNum.begin(), bansToNum.end(), greater<>());
 
     int bansLength = bans.size();
-    for (int i = bansLength - 1; i >= 0; i--) 
+    for (int i = 0; i < bansLength; i++) 
     {
         long long banNum = bansToNum[i];
-        if (banNum - i <= n) 
+        if (banNum - (bansLength - 1 - i) <= n) 
         {
-            n += i + 1;
+            n += bansLength - i ;
             break;
         }
     }
